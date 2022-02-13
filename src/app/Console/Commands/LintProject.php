@@ -37,14 +37,16 @@ class LintProject extends Command
      */
     public function handle()
     {
-        if ($this->option("fix")) {
-            exec("./vendor/bin/phpcbf ./app ./database ./routes ./tests ./config", $output);
+        if ($this->option('fix')) {
+            exec('./vendor/bin/phpcbf ./app ./database ./routes ./tests ./config', $output);
             $this->comment(implode(PHP_EOL, $output));
+
             return 0;
         }
 
-        exec("./vendor/bin/phpcs ./app ./database ./routes ./tests ./config", $output);
+        exec('./vendor/bin/phpcs ./app ./database ./routes ./tests ./config', $output);
         $this->comment(implode(PHP_EOL, $output));
+
         return 0;
     }
 }

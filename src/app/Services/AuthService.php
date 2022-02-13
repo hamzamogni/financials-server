@@ -14,7 +14,8 @@ class AuthService
     }
 
     /**
-     * @param  array $data
+     * @param array $data
+     *
      * @return array
      */
     public function signUp(array $data): array
@@ -26,8 +27,8 @@ class AuthService
         $token = $this->userRepository->createToken($user);
 
         return [
-            "user" => $user,
-            "token" => $token
+            'user'  => $user,
+            'token' => $token,
         ];
     }
 }

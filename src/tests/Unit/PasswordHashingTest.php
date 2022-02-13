@@ -15,11 +15,11 @@ class PasswordHashingTest extends TestCase
      */
     public function testPasswordGetsHashedWhenSet()
     {
-        Hash::shouldReceive("make")->once()->andReturn("hashed");
+        Hash::shouldReceive('make')->once()->andReturn('hashed');
 
         $user = new User();
-        $user->password = "test";
+        $user->password = 'test';
 
-        $this->assertEquals("hashed", $user->password);
+        $this->assertEquals('hashed', $user->password);
     }
 }

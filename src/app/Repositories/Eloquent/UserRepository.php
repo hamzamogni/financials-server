@@ -14,11 +14,11 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
 
     public function getByEmail(string $email): ?User
     {
-        return User::where("email", $email)->first();
+        return User::where('email', $email)->first();
     }
 
     public function createToken(User $user)
     {
-        return $user->createToken("user-string")->plainTextToken;
+        return $user->createToken('user-string')->plainTextToken;
     }
 }

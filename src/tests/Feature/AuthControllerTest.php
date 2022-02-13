@@ -8,28 +8,29 @@ use Tests\TestCase;
 
 class AuthControllerTest extends TestCase
 {
-    use RefreshDatabase, WithFaker;
+    use RefreshDatabase;
+    use WithFaker;
 
     public function testUserCanSignup()
     {
         $userData = [
-            "name" => $this->faker->name,
-            "email" => $this->faker->safeEmail,
-            "password" => $this->faker->password,
+            'name'     => $this->faker->name,
+            'email'    => $this->faker->safeEmail,
+            'password' => $this->faker->password,
         ];
 
-        $response = $this->postJson("/api/sign-up", $userData);
+        $response = $this->postJson('/api/sign-up', $userData);
 
         $this->assertDatabaseHas(
-            "users",
+            'users',
             [
-            "name" => $userData["name"],
-            "email" => $userData["email"],
+                'name'  => $userData['name'],
+                'email' => $userData['email'],
             ]
         );
 
         $response->assertCreated();
 
-        $response->assertJsonStructure(["user", "token"]);
+        $response->assertJsonStructure(['user', 'token']);
     }
 }

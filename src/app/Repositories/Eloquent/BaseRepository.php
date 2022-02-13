@@ -26,7 +26,7 @@ class BaseRepository implements EloquentRepositoryInterface
     }
 
     /**
-     * @param              $id
+     * @param $id
      * @codeCoverageIgnore
      */
     public function find($id): Model
@@ -37,12 +37,14 @@ class BaseRepository implements EloquentRepositoryInterface
     public function update(Model $model, array $attributes): Model
     {
         $model->update($attributes);
+
         return $model->fresh();
     }
 
     public function destroy(Model $model): bool
     {
         $model->delete();
+
         return true;
     }
 }
