@@ -19,7 +19,8 @@ class AuthController extends Controller
         $userWithToken = $this->authService->signUp($request->all());
 
         return response(
-            $userWithToken
+            $userWithToken,
+            201
         );
     }
 }
