@@ -14,7 +14,7 @@ class AuthService
     }
 
     /**
-     * @param array $data
+     * @param  array $data
      * @return array
      */
     public function signUp(array $data): array

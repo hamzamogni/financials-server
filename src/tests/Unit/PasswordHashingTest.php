@@ -13,7 +13,7 @@ class PasswordHashingTest extends TestCase
      *
      * @return void
      */
-    public function test_example()
+    public function testPasswordGetsHashedWhenSet()
     {
         Hash::shouldReceive("make")->once()->andReturn("hashed");
 

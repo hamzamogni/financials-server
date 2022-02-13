@@ -20,10 +20,13 @@ class AuthControllerTest extends TestCase
 
         $response = $this->postJson("/api/sign-up", $userData);
 
-        $this->assertDatabaseHas("users", [
+        $this->assertDatabaseHas(
+            "users",
+            [
             "name" => $userData["name"],
             "email" => $userData["email"],
-        ]);
+            ]
+        );
 
         $response->assertCreated();
 

@@ -26,7 +26,7 @@ class BaseRepository implements EloquentRepositoryInterface
     }
 
     /**
-     * @param $id
+     * @param              $id
      * @codeCoverageIgnore
      */
     public function find($id): Model
