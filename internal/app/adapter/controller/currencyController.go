@@ -67,7 +67,7 @@ func (ctrl Controller) DeleteCurrency(c *gin.Context) {
 	})
 
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": err})
+		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
 	}
 

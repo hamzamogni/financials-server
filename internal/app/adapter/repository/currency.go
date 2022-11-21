@@ -4,6 +4,7 @@ import (
 	"financials/internal/app/adapter/postgresql"
 	"financials/internal/app/adapter/postgresql/model"
 	"financials/internal/app/domain"
+	"gorm.io/gorm"
 )
 
 type Currency struct{}
@@ -65,6 +66,10 @@ func (c Currency) Delete(ID string) error {
 	result := db.Delete(&currency, ID)
 	if result.Error != nil {
 		return result.Error
+	}
+
+	if result.RowsAffected == 0 {
+		return gorm.ErrRecordNotFound
 	}
 
 	return nil
