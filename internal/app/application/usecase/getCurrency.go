@@ -1,8 +1,8 @@
 package usecase
 
 import (
-	"goland/internal/app/domain"
-	"goland/internal/app/domain/repository"
+	"financials/internal/app/domain"
+	"financials/internal/app/domain/repository"
 )
 
 type GetCurrencyArgs struct {

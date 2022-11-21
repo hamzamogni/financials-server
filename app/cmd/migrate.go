@@ -1,10 +1,10 @@
 package cmd
 
 import (
+	"financials/internal/app/adapter/postgresql"
+	"financials/internal/app/adapter/postgresql/model"
 	"fmt"
 	"github.com/spf13/cobra"
-	"goland/internal/app/adapter/postgresql"
-	"goland/internal/app/adapter/postgresql/model"
 )
 
 // migrateCmd represents the migrate command

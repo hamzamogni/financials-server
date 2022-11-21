@@ -1,6 +1,6 @@
 package repository
 
-import "goland/internal/app/domain"
+import "financials/internal/app/domain"
 
 type ICurrency interface {
 	Get(ID string) (domain.Currency, error)

@@ -1,10 +1,10 @@
 package controller
 
 import (
+	"financials/internal/app/adapter/repository"
+	"financials/internal/app/application/usecase"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"goland/internal/app/adapter/repository"
-	"goland/internal/app/application/usecase"
 	"net/http"
 )
 

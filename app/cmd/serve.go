@@ -1,9 +1,9 @@
 package cmd
 
 import (
+	"financials/internal/app/adapter/controller"
 	"fmt"
 	"github.com/spf13/cobra"
-	"goland/internal/app/adapter/controller"
 )
 
 // serveCmd represents the serve command

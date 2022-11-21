@@ -1,9 +1,9 @@
 package repository
 
 import (
-	"goland/internal/app/adapter/postgresql"
-	"goland/internal/app/adapter/postgresql/model"
-	"goland/internal/app/domain"
+	"financials/internal/app/adapter/postgresql"
+	"financials/internal/app/adapter/postgresql/model"
+	"financials/internal/app/domain"
 )
 
 type Currency struct{}

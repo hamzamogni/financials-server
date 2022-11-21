@@ -1,8 +1,8 @@
 package main
 
 import (
+	"financials/app/cmd"
 	"github.com/spf13/viper"
-	"goland/app/cmd"
 	"os"
 )
 

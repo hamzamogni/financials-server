@@ -1,4 +1,4 @@
-module goland
+module financials
 
 go 1.19
 
