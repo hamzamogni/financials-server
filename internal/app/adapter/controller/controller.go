@@ -8,8 +8,9 @@ func Router() *gin.Engine {
 	r := gin.Default()
 	ctrl := Controller{}
 
-	r.POST("/currencies", ctrl.CreateCurrency)
+	r.GET("/currencies", ctrl.IndexCurrency)
 	r.GET("/currencies/:id", ctrl.GetCurrency)
+	r.POST("/currencies", ctrl.CreateCurrency)
 
 	return r
 }

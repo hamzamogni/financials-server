@@ -8,6 +8,29 @@ import (
 
 type Currency struct{}
 
+func (c Currency) Index() ([]domain.Currency, error) {
+	db := postgresql.Connection()
+
+	var ret []domain.Currency
+
+	var currencies []model.Currency
+	result := db.Find(&currencies)
+
+	if result.Error != nil {
+		return []domain.Currency{}, result.Error
+	}
+
+	for _, currency := range currencies {
+		ret = append(ret, domain.Currency{
+			ID:     currency.ID,
+			Name:   currency.Name,
+			Symbol: currency.Symbol,
+		})
+	}
+
+	return ret, nil
+}
+
 func (c Currency) Get(ID string) (domain.Currency, error) {
 	db := postgresql.Connection()
 	var currency model.Currency
