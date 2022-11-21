@@ -3,7 +3,6 @@ package controller
 import (
 	"financials/internal/app/adapter/repository"
 	"financials/internal/app/application/usecase"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -11,6 +10,20 @@ import (
 var (
 	currencyRepository = repository.Currency{}
 )
+
+func (ctrl Controller) IndexCurrency(c *gin.Context) {
+	var args usecase.IndexCurrencyArgs
+
+	args.CurrencyRepository = currencyRepository
+
+	currencies, err := usecase.IndexCurrency(args)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+		return
+	}
+
+	c.JSON(200, currencies)
+}
 
 func (ctrl Controller) CreateCurrency(c *gin.Context) {
 	var args usecase.CreateCurrencyArgs
@@ -21,7 +34,6 @@ func (ctrl Controller) CreateCurrency(c *gin.Context) {
 	}
 
 	args.CurrencyRepository = currencyRepository
-	fmt.Println(args)
 
 	currency, err := usecase.CreateCurrency(args)
 	if err != nil {
@@ -44,5 +56,4 @@ func (ctrl Controller) GetCurrency(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, currency)
-
 }
