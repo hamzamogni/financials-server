@@ -1,4 +1,4 @@
-module goland
+module github.com/hamzamogni/financials-server
 
 go 1.19
 
