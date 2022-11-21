@@ -57,3 +57,15 @@ func (c Currency) Save(currency domain.Currency) (domain.Currency, error) {
 
 	return currency, nil
 }
+
+func (c Currency) Delete(ID string) error {
+	var currency model.Currency
+	db := postgresql.Connection()
+
+	result := db.Delete(&currency, ID)
+	if result.Error != nil {
+		return result.Error
+	}
+
+	return nil
+}

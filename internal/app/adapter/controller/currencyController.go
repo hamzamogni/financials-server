@@ -57,3 +57,19 @@ func (ctrl Controller) CreateCurrency(c *gin.Context) {
 	}
 	c.JSON(200, currency)
 }
+
+func (ctrl Controller) DeleteCurrency(c *gin.Context) {
+	id := c.Param("id")
+
+	err := usecase.DeleteCurrency(usecase.DeleteCurrencyArgs{
+		ID:                 id,
+		CurrencyRepository: currencyRepository,
+	})
+
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": err})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"success": "true"})
+}
