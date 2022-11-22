@@ -12,6 +12,7 @@ func Router() *gin.Engine {
 	r.GET("/currencies", ctrl.IndexCurrency)
 	r.GET("/currencies/:id", ctrl.GetCurrency)
 	r.POST("/currencies", ctrl.CreateCurrency)
+	r.PATCH("/currencies/:id", ctrl.UpdateCurrency)
 	r.DELETE("/currencies/:id", ctrl.DeleteCurrency)
 
 	return r

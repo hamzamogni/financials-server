@@ -55,7 +55,31 @@ func (ctrl Controller) CreateCurrency(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err})
 		return
 	}
-	c.JSON(200, currency)
+	c.JSON(http.StatusOK, currency)
+}
+
+func (ctrl Controller) UpdateCurrency(c *gin.Context) {
+	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Bad id"})
+	}
+
+	var args usecase.UpdateCurrencyArgs
+	if err := c.ShouldBindJSON(&args); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Bad Request"})
+	}
+
+	args.ID = uint(id)
+	args.CurrencyRepository = currencyRepository
+
+	currency, err := usecase.UpdateCurrency(args)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err})
+		return
+	}
+
+	c.JSON(http.StatusOK, currency)
+
 }
 
 func (ctrl Controller) DeleteCurrency(c *gin.Context) {

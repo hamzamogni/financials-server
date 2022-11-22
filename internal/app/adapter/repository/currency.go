@@ -59,6 +59,22 @@ func (c Currency) Save(currency domain.Currency) (domain.Currency, error) {
 	return currency, nil
 }
 
+func (c Currency) Update(currency domain.Currency) (domain.Currency, error) {
+	var updatedCurrency model.Currency
+	db := postgresql.Connection()
+
+	if err := db.Model(&currency).Updates(currency).Error; err != nil {
+		return domain.Currency{}, err
+	}
+
+	db.Where("id = ?", currency.ID).First(&updatedCurrency)
+	return domain.Currency{
+		ID:     updatedCurrency.ID,
+		Name:   updatedCurrency.Name,
+		Symbol: updatedCurrency.Symbol,
+	}, nil
+}
+
 func (c Currency) Delete(ID string) error {
 	var currency model.Currency
 	db := postgresql.Connection()
