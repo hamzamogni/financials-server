@@ -12,4 +12,4 @@ COPY . .
 
 EXPOSE 8080
 
-CMD reflex -g "*.go" go run app/main.go --start-service
+CMD reflex -r "\.go$" go run app/main.go --start-service
