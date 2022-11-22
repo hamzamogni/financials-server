@@ -6,8 +6,8 @@ import (
 )
 
 type CreateCurrencyArgs struct {
-	Name   string `json:"name"`
-	Symbol string `json:"symbol"`
+	Name   string `json:"name" binding:"required"`
+	Symbol string `json:"symbol" binding:"required"`
 
 	CurrencyRepository repository.ICurrency
 }
