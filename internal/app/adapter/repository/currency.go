@@ -32,11 +32,11 @@ func (c Currency) Index() ([]domain.Currency, error) {
 	return ret, nil
 }
 
-func (c Currency) Get(ID string) (domain.Currency, error) {
+func (c Currency) Get(id string) (domain.Currency, error) {
 	db := postgresql.Connection()
 	var currency model.Currency
 
-	result := db.Where("id = ?", ID).First(&currency)
+	result := db.Where("id = ?", id).First(&currency)
 	if result.Error != nil {
 		return domain.Currency{}, result.Error
 	}
