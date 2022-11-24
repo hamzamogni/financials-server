@@ -1,9 +1,11 @@
 package controller
 
 import (
+	"errors"
 	"financials/internal/app/adapter/repository"
 	"financials/internal/app/application/usecase"
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 	"net/http"
 	"strconv"
 )
@@ -34,7 +36,7 @@ func (ctrl Controller) GetCurrency(c *gin.Context) {
 		CurrencyRepository: currencyRepository,
 	})
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -75,7 +77,10 @@ func (ctrl Controller) UpdateCurrency(c *gin.Context) {
 
 	currency, err := usecase.UpdateCurrency(args)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err})
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		}
+
 		return
 	}
 

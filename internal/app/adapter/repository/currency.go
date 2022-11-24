@@ -62,8 +62,13 @@ func (c Currency) Save(currency domain.Currency) (domain.Currency, error) {
 func (c Currency) Update(currency domain.Currency) error {
 	db := postgresql.Connection()
 
-	if err := db.Model(&currency).Updates(currency).Error; err != nil {
-		return err
+	result := db.Model(&currency).Updates(currency)
+
+	if result.RowsAffected == 0 {
+		return gorm.ErrRecordNotFound
+	}
+	if result.Error != nil {
+		return result.Error
 	}
 
 	return nil
