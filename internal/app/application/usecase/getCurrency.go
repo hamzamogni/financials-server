@@ -6,7 +6,7 @@ import (
 )
 
 type GetCurrencyArgs struct {
-	ID                 string
+	ID                 uint
 	CurrencyRepository repository.ICurrency
 }
 

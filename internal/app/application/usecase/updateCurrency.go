@@ -18,10 +18,11 @@ func UpdateCurrency(args UpdateCurrencyArgs) (domain.Currency, error) {
 		Name:   args.Name,
 		Symbol: args.Symbol,
 	}
-	result, err := args.CurrencyRepository.Update(currency)
+	err := args.CurrencyRepository.Update(currency)
 	if err != nil {
 		return domain.Currency{}, err
 	}
 
+	result, err := args.CurrencyRepository.Get(currency.ID)
 	return result, nil
 }

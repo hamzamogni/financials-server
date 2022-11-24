@@ -27,10 +27,10 @@ func (ctrl Controller) IndexCurrency(c *gin.Context) {
 }
 
 func (ctrl Controller) GetCurrency(c *gin.Context) {
-	id := c.Param("id")
+	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 
 	currency, err := usecase.GetCurrency(usecase.GetCurrencyArgs{
-		ID:                 id,
+		ID:                 uint(id),
 		CurrencyRepository: currencyRepository,
 	})
 	if err != nil {

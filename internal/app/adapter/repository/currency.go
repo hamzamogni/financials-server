@@ -32,7 +32,7 @@ func (c Currency) Index() ([]domain.Currency, error) {
 	return ret, nil
 }
 
-func (c Currency) Get(id string) (domain.Currency, error) {
+func (c Currency) Get(id uint) (domain.Currency, error) {
 	db := postgresql.Connection()
 	var currency model.Currency
 
@@ -59,20 +59,14 @@ func (c Currency) Save(currency domain.Currency) (domain.Currency, error) {
 	return currency, nil
 }
 
-func (c Currency) Update(currency domain.Currency) (domain.Currency, error) {
-	var updatedCurrency model.Currency
+func (c Currency) Update(currency domain.Currency) error {
 	db := postgresql.Connection()
 
 	if err := db.Model(&currency).Updates(currency).Error; err != nil {
-		return domain.Currency{}, err
+		return err
 	}
 
-	db.Where("id = ?", currency.ID).First(&updatedCurrency)
-	return domain.Currency{
-		ID:     updatedCurrency.ID,
-		Name:   updatedCurrency.Name,
-		Symbol: updatedCurrency.Symbol,
-	}, nil
+	return nil
 }
 
 func (c Currency) Delete(ID string) error {
