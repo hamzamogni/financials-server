@@ -48,7 +48,8 @@ func (ctrl Controller) CreateCurrency(c *gin.Context) {
 
 	err := c.ShouldBindJSON(&args)
 	if err != nil {
-		c.JSON(http.StatusUnprocessableEntity, gin.H{"error": err})
+		c.JSON(http.StatusUnprocessableEntity, gin.H{"error": err.Error()})
+		return
 	}
 
 	args.CurrencyRepository = currencyRepository
