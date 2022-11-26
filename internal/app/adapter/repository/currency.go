@@ -50,8 +50,13 @@ func (c Currency) Get(id uint) (domain.Currency, error) {
 
 func (c Currency) Save(currency domain.Currency) (domain.Currency, error) {
 	db := postgresql.Connection()
-	result := db.Create(&currency)
 
+	newCurrency := model.Currency{
+		Name:   currency.Name,
+		Symbol: currency.Symbol,
+	}
+
+	result := db.Create(&newCurrency)
 	if result.Error != nil {
 		return domain.Currency{}, result.Error
 	}
@@ -62,7 +67,13 @@ func (c Currency) Save(currency domain.Currency) (domain.Currency, error) {
 func (c Currency) Update(currency domain.Currency) error {
 	db := postgresql.Connection()
 
-	result := db.Model(&currency).Updates(currency)
+	toUpdateCurrency := model.Currency{
+		ID:     currency.ID,
+		Name:   currency.Name,
+		Symbol: currency.Symbol,
+	}
+
+	result := db.Model(&toUpdateCurrency).Updates(toUpdateCurrency)
 
 	if result.RowsAffected == 0 {
 		return gorm.ErrRecordNotFound
