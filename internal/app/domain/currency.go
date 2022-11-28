@@ -1,7 +1,7 @@
 package domain
 
 type Currency struct {
-	ID     uint
+	Id     uint
 	Name   string
 	Symbol string
 }

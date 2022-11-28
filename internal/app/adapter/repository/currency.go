@@ -23,7 +23,7 @@ func (c Currency) Index() ([]domain.Currency, error) {
 
 	for _, currency := range currencies {
 		ret = append(ret, domain.Currency{
-			ID:     currency.ID,
+			Id:     currency.ID,
 			Name:   currency.Name,
 			Symbol: currency.Symbol,
 		})
@@ -42,7 +42,7 @@ func (c Currency) Get(id uint) (domain.Currency, error) {
 	}
 
 	return domain.Currency{
-		ID:     currency.ID,
+		Id:     currency.ID,
 		Name:   currency.Name,
 		Symbol: currency.Symbol,
 	}, nil
@@ -68,7 +68,7 @@ func (c Currency) Update(currency domain.Currency) error {
 	db := postgresql.Connection()
 
 	toUpdateCurrency := model.Currency{
-		ID:     currency.ID,
+		ID:     currency.Id,
 		Name:   currency.Name,
 		Symbol: currency.Symbol,
 	}

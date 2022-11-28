@@ -6,7 +6,7 @@ import (
 )
 
 type UpdateCurrencyArgs struct {
-	ID                 uint
+	Id                 uint
 	Name               string `json:"name"`
 	Symbol             string `json:"symbol"`
 	CurrencyRepository repository.ICurrency
@@ -14,7 +14,7 @@ type UpdateCurrencyArgs struct {
 
 func UpdateCurrency(args UpdateCurrencyArgs) (domain.Currency, error) {
 	currency := domain.Currency{
-		ID:     args.ID,
+		Id:     args.Id,
 		Name:   args.Name,
 		Symbol: args.Symbol,
 	}
@@ -23,6 +23,6 @@ func UpdateCurrency(args UpdateCurrencyArgs) (domain.Currency, error) {
 		return domain.Currency{}, err
 	}
 
-	result, err := args.CurrencyRepository.Get(currency.ID)
+	result, err := args.CurrencyRepository.Get(currency.Id)
 	return result, nil
 }

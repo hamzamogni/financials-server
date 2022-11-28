@@ -32,7 +32,7 @@ func (ctrl Controller) GetCurrency(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 
 	currency, err := usecase.GetCurrency(usecase.GetCurrencyArgs{
-		ID:                 uint(id),
+		Id:                 uint(id),
 		CurrencyRepository: currencyRepository,
 	})
 	if err != nil {
@@ -73,7 +73,7 @@ func (ctrl Controller) UpdateCurrency(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Bad Request"})
 	}
 
-	args.ID = uint(id)
+	args.Id = uint(id)
 	args.CurrencyRepository = currencyRepository
 
 	currency, err := usecase.UpdateCurrency(args)
@@ -93,7 +93,7 @@ func (ctrl Controller) DeleteCurrency(c *gin.Context) {
 	id := c.Param("id")
 
 	err := usecase.DeleteCurrency(usecase.DeleteCurrencyArgs{
-		ID:                 id,
+		Id:                 id,
 		CurrencyRepository: currencyRepository,
 	})
 

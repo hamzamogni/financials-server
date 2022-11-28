@@ -6,12 +6,12 @@ import (
 )
 
 type GetCurrencyArgs struct {
-	ID                 uint
+	Id                 uint
 	CurrencyRepository repository.ICurrency
 }
 
 func GetCurrency(args GetCurrencyArgs) (domain.Currency, error) {
-	result, err := args.CurrencyRepository.Get(args.ID)
+	result, err := args.CurrencyRepository.Get(args.Id)
 	if err != nil {
 		return domain.Currency{}, err
 	}
