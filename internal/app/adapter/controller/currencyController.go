@@ -19,7 +19,7 @@ func (ctrl Controller) IndexCurrency(c *gin.Context) {
 
 	args.CurrencyRepository = currencyRepository
 
-	currencies, err := usecase.IndexCurrency(args)
+	currencies, err := usecase.ManageCurrency{}.Index(args)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
 		return
@@ -31,7 +31,7 @@ func (ctrl Controller) IndexCurrency(c *gin.Context) {
 func (ctrl Controller) GetCurrency(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 
-	currency, err := usecase.GetCurrency(usecase.GetCurrencyArgs{
+	currency, err := usecase.ManageCurrency{}.Get(usecase.GetCurrencyArgs{
 		Id:                 uint(id),
 		CurrencyRepository: currencyRepository,
 	})
@@ -54,7 +54,7 @@ func (ctrl Controller) CreateCurrency(c *gin.Context) {
 
 	args.CurrencyRepository = currencyRepository
 
-	currency, err := usecase.CreateCurrency(args)
+	currency, err := usecase.ManageCurrency{}.Create(args)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err})
 		return
@@ -76,7 +76,7 @@ func (ctrl Controller) UpdateCurrency(c *gin.Context) {
 	args.Id = uint(id)
 	args.CurrencyRepository = currencyRepository
 
-	currency, err := usecase.UpdateCurrency(args)
+	currency, err := usecase.ManageCurrency{}.Update(args)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
@@ -92,7 +92,7 @@ func (ctrl Controller) UpdateCurrency(c *gin.Context) {
 func (ctrl Controller) DeleteCurrency(c *gin.Context) {
 	id := c.Param("id")
 
-	err := usecase.DeleteCurrency(usecase.DeleteCurrencyArgs{
+	err := usecase.ManageCurrency{}.Delete(usecase.DeleteCurrencyArgs{
 		Id:                 id,
 		CurrencyRepository: currencyRepository,
 	})
