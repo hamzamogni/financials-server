@@ -5,14 +5,16 @@ import (
 	"financials/internal/app/domain/repository"
 )
 
-type ManageCurrency struct{}
+type ManageCurrency struct {
+	CurrencyRepository repository.ICurrency
+}
 
 type IndexCurrencyArgs struct {
 	CurrencyRepository repository.ICurrency
 }
 
-func (mc ManageCurrency) Index(args IndexCurrencyArgs) ([]domain.Currency, error) {
-	result, err := args.CurrencyRepository.Index()
+func (mc ManageCurrency) Index() ([]domain.Currency, error) {
+	result, err := mc.CurrencyRepository.Index()
 	if err != nil {
 		return []domain.Currency{}, err
 	}
@@ -21,12 +23,11 @@ func (mc ManageCurrency) Index(args IndexCurrencyArgs) ([]domain.Currency, error
 }
 
 type GetCurrencyArgs struct {
-	Id                 uint
-	CurrencyRepository repository.ICurrency
+	Id uint
 }
 
 func (mc ManageCurrency) Get(args GetCurrencyArgs) (domain.Currency, error) {
-	result, err := args.CurrencyRepository.Get(args.Id)
+	result, err := mc.CurrencyRepository.Get(args.Id)
 	if err != nil {
 		return domain.Currency{}, err
 	}
@@ -37,8 +38,6 @@ func (mc ManageCurrency) Get(args GetCurrencyArgs) (domain.Currency, error) {
 type CreateCurrencyArgs struct {
 	Name   string `json:"name" binding:"required"`
 	Symbol string `json:"symbol" binding:"required"`
-
-	CurrencyRepository repository.ICurrency
 }
 
 func (mc ManageCurrency) Create(args CreateCurrencyArgs) (domain.Currency, error) {
@@ -47,7 +46,7 @@ func (mc ManageCurrency) Create(args CreateCurrencyArgs) (domain.Currency, error
 		Symbol: args.Symbol,
 	}
 
-	result, err := args.CurrencyRepository.Save(currency)
+	result, err := mc.CurrencyRepository.Save(currency)
 	if err != nil {
 		return domain.Currency{}, err
 	}
@@ -56,10 +55,9 @@ func (mc ManageCurrency) Create(args CreateCurrencyArgs) (domain.Currency, error
 }
 
 type UpdateCurrencyArgs struct {
-	Id                 uint
-	Name               string `json:"name"`
-	Symbol             string `json:"symbol"`
-	CurrencyRepository repository.ICurrency
+	Id     uint
+	Name   string `json:"name"`
+	Symbol string `json:"symbol"`
 }
 
 func (mc ManageCurrency) Update(args UpdateCurrencyArgs) (domain.Currency, error) {
@@ -68,22 +66,21 @@ func (mc ManageCurrency) Update(args UpdateCurrencyArgs) (domain.Currency, error
 		Name:   args.Name,
 		Symbol: args.Symbol,
 	}
-	err := args.CurrencyRepository.Update(currency)
+	err := mc.CurrencyRepository.Update(currency)
 	if err != nil {
 		return domain.Currency{}, err
 	}
 
-	result, err := args.CurrencyRepository.Get(currency.Id)
+	result, err := mc.CurrencyRepository.Get(currency.Id)
 	return result, nil
 }
 
 type DeleteCurrencyArgs struct {
-	Id                 string
-	CurrencyRepository repository.ICurrency
+	Id string
 }
 
 func (mc ManageCurrency) Delete(args DeleteCurrencyArgs) error {
-	err := args.CurrencyRepository.Delete(args.Id)
+	err := mc.CurrencyRepository.Delete(args.Id)
 	if err != nil {
 		return err
 	}
