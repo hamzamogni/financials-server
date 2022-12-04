@@ -2,16 +2,11 @@ package controller
 
 import (
 	"errors"
-	"financials/internal/app/adapter/repository"
 	"financials/internal/app/application/usecase"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 	"net/http"
 	"strconv"
-)
-
-var (
-	currencyRepository = repository.Currency{}
 )
 
 func (ctrl Controller) IndexCurrency(c *gin.Context) {

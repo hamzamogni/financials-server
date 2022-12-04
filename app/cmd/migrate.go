@@ -23,6 +23,7 @@ to quickly create a Cobra application.`,
 		db := postgresql.Connection()
 
 		db.AutoMigrate(&model.Currency{})
+		db.AutoMigrate(&model.Account{})
 	},
 }
 
