@@ -86,10 +86,10 @@ func (c Currency) Update(currency domain.Currency) error {
 }
 
 func (c Currency) Delete(ID string) error {
-	var currency model.Currency
 	db := postgresql.Connection()
 
-	result := db.Delete(&currency, ID)
+	result := db.Model(&model.Currency{}).Where("id = ?", ID).Delete(&model.Currency{})
+
 	if result.Error != nil {
 		return result.Error
 	}

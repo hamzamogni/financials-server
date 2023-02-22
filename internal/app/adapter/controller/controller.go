@@ -2,10 +2,13 @@ package controller
 
 import (
 	"financials/internal/app/adapter/repository"
+	"financials/internal/app/adapter/response"
 	"github.com/gin-gonic/gin"
 )
 
-type Controller struct{}
+type Controller struct {
+	response response.Response
+}
 
 var (
 	currencyRepository = repository.Currency{}

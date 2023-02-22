@@ -16,11 +16,11 @@ func (ctrl Controller) IndexCurrency(c *gin.Context) {
 	}.Index()
 
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+		ctrl.response.Error(c, http.StatusBadRequest, err)
 		return
 	}
 
-	c.JSON(200, currencies)
+	ctrl.response.Success(c, http.StatusOK, currencies)
 }
 
 func (ctrl Controller) GetCurrency(c *gin.Context) {
@@ -32,11 +32,16 @@ func (ctrl Controller) GetCurrency(c *gin.Context) {
 
 	currency, err := usecase.ManageCurrency{CurrencyRepository: currencyRepository}.Get(args)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			ctrl.response.Error(c, http.StatusNotFound, err)
+			return
+		}
+
+		ctrl.response.Error(c, http.StatusInternalServerError, err)
 		return
 	}
 
-	c.JSON(http.StatusOK, currency)
+	ctrl.response.Success(c, http.StatusOK, currency)
 }
 
 func (ctrl Controller) CreateCurrency(c *gin.Context) {
@@ -44,7 +49,7 @@ func (ctrl Controller) CreateCurrency(c *gin.Context) {
 
 	err := c.ShouldBindJSON(&args)
 	if err != nil {
-		c.JSON(http.StatusUnprocessableEntity, gin.H{"error": err.Error()})
+		ctrl.response.Error(c, http.StatusUnprocessableEntity, err)
 		return
 	}
 
@@ -53,21 +58,20 @@ func (ctrl Controller) CreateCurrency(c *gin.Context) {
 	}.Create(args)
 
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err})
+		ctrl.response.Error(c, http.StatusBadRequest, err)
 		return
 	}
-	c.JSON(http.StatusOK, currency)
+
+	ctrl.response.Success(c, http.StatusCreated, currency)
 }
 
 func (ctrl Controller) UpdateCurrency(c *gin.Context) {
-	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Bad id"})
-	}
+	id, _ := strconv.ParseUint(c.Param("id"), 10, 64)
 
 	var args usecase.UpdateCurrencyArgs
 	if err := c.ShouldBindJSON(&args); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Bad Request"})
+		ctrl.response.Error(c, http.StatusUnprocessableEntity, err)
+		return
 	}
 
 	args.Id = uint(id)
@@ -78,14 +82,15 @@ func (ctrl Controller) UpdateCurrency(c *gin.Context) {
 
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+			ctrl.response.Error(c, http.StatusNotFound, err)
+			return
 		}
 
+		ctrl.response.Error(c, http.StatusInternalServerError, err)
 		return
 	}
 
-	c.JSON(http.StatusOK, currency)
-
+	ctrl.response.Success(c, http.StatusOK, currency)
 }
 
 func (ctrl Controller) DeleteCurrency(c *gin.Context) {
@@ -100,9 +105,14 @@ func (ctrl Controller) DeleteCurrency(c *gin.Context) {
 	}.Delete(args)
 
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			ctrl.response.Error(c, http.StatusNotFound, err)
+			return
+		}
+
+		ctrl.response.Error(c, http.StatusInternalServerError, err)
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"success": "true"})
+	ctrl.response.Success(c, http.StatusOK, "")
 }
