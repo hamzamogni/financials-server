@@ -11,7 +11,7 @@ func (ctrl Controller) CreateAccount(c *gin.Context) {
 
 	err := c.ShouldBindJSON(&args)
 	if err != nil {
-		c.JSON(http.StatusUnprocessableEntity, gin.H{"error": err.Error()})
+		ctrl.response.Error(c, http.StatusUnprocessableEntity, err)
 		return
 	}
 
@@ -21,8 +21,9 @@ func (ctrl Controller) CreateAccount(c *gin.Context) {
 	}.Create(args)
 
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err})
+		ctrl.response.Error(c, http.StatusBadRequest, err)
 		return
 	}
-	c.JSON(http.StatusOK, account)
+
+	ctrl.response.Success(c, http.StatusCreated, account)
 }
