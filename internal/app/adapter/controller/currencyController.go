@@ -2,18 +2,19 @@ package controller
 
 import (
 	"errors"
+	"financials/internal/app/adapter/repository"
 	"financials/internal/app/application/usecase"
 	"github.com/gin-gonic/gin"
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 	"gorm.io/gorm"
 	"net/http"
-	"strconv"
+	"strings"
 )
 
 func (ctrl Controller) IndexCurrency(c *gin.Context) {
 
-	currencies, err := usecase.ManageCurrency{
-		CurrencyRepository: currencyRepository,
-	}.Index()
+	currencies, err := usecase.NewManageCurrency(repository.NewCurrencyRepository()).Index()
 
 	if err != nil {
 		ctrl.response.Error(c, http.StatusBadRequest, err)
@@ -24,13 +25,13 @@ func (ctrl Controller) IndexCurrency(c *gin.Context) {
 }
 
 func (ctrl Controller) GetCurrency(c *gin.Context) {
-	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
+	symbol := strings.ToUpper(c.Param("symbol"))
 
 	args := usecase.GetCurrencyArgs{
-		Id: uint(id),
+		Symbol: symbol,
 	}
 
-	currency, err := usecase.ManageCurrency{CurrencyRepository: currencyRepository}.Get(args)
+	currency, err := usecase.NewManageCurrency(repository.NewCurrencyRepository()).Get(args)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			ctrl.response.Error(c, http.StatusNotFound, err)
@@ -53,9 +54,9 @@ func (ctrl Controller) CreateCurrency(c *gin.Context) {
 		return
 	}
 
-	currency, err := usecase.ManageCurrency{
-		CurrencyRepository: currencyRepository,
-	}.Create(args)
+	currency, err := usecase.NewManageCurrency(
+		repository.NewCurrencyRepository(),
+	).Create(args)
 
 	if err != nil {
 		ctrl.response.Error(c, http.StatusBadRequest, err)
@@ -65,44 +66,16 @@ func (ctrl Controller) CreateCurrency(c *gin.Context) {
 	ctrl.response.Success(c, http.StatusCreated, currency)
 }
 
-func (ctrl Controller) UpdateCurrency(c *gin.Context) {
-	id, _ := strconv.ParseUint(c.Param("id"), 10, 64)
-
-	var args usecase.UpdateCurrencyArgs
-	if err := c.ShouldBindJSON(&args); err != nil {
-		ctrl.response.Error(c, http.StatusUnprocessableEntity, err)
-		return
-	}
-
-	args.Id = uint(id)
-
-	currency, err := usecase.ManageCurrency{
-		CurrencyRepository: currencyRepository,
-	}.Update(args)
-
-	if err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			ctrl.response.Error(c, http.StatusNotFound, err)
-			return
-		}
-
-		ctrl.response.Error(c, http.StatusInternalServerError, err)
-		return
-	}
-
-	ctrl.response.Success(c, http.StatusOK, currency)
-}
-
 func (ctrl Controller) DeleteCurrency(c *gin.Context) {
-	id := c.Param("id")
+	symbol := cases.Upper(language.Und).String(c.Param("symbol"))
 
 	args := usecase.DeleteCurrencyArgs{
-		Id: id,
+		Symbol: symbol,
 	}
 
-	err := usecase.ManageCurrency{
-		CurrencyRepository: currencyRepository,
-	}.Delete(args)
+	err := usecase.NewManageCurrency(
+		repository.NewCurrencyRepository(),
+	).Delete(args)
 
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {

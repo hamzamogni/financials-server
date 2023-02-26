@@ -8,24 +8,33 @@ import (
 
 type Controller struct {
 	response response.Response
+
+	CurrencyRepository repository.CurrencyRepository
+	AccountRepository  repository.AccountRepository
 }
 
-var (
-	currencyRepository = repository.Currency{}
-	accountRepository  = repository.Account{}
-)
+func NewController(
+	currencyRepository repository.CurrencyRepository,
+	accountRepository repository.AccountRepository,
+) *Controller {
+	return &Controller{
+		response:           response.Response{},
+		CurrencyRepository: currencyRepository,
+		AccountRepository:  accountRepository,
+	}
+}
 
 func Router() *gin.Engine {
 	r := gin.Default()
-	ctrl := Controller{}
+	ctrl := NewController(*repository.NewCurrencyRepository(), *repository.NewAccountRepository())
 
 	// currencies routes
 	r.GET("/currencies", ctrl.IndexCurrency)
-	r.GET("/currencies/:id", ctrl.GetCurrency)
+	r.GET("/currencies/:symbol", ctrl.GetCurrency)
 	r.POST("/currencies", ctrl.CreateCurrency)
-	r.PATCH("/currencies/:id", ctrl.UpdateCurrency)
-	r.DELETE("/currencies/:id", ctrl.DeleteCurrency)
+	r.DELETE("/currencies/:symbol", ctrl.DeleteCurrency)
 
+	r.GET("/accounts", ctrl.IndexAccount)
 	r.POST("/accounts", ctrl.CreateAccount)
 	return r
 }

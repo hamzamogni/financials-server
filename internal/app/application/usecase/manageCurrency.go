@@ -9,6 +9,10 @@ type ManageCurrency struct {
 	CurrencyRepository repository.ICurrency
 }
 
+func NewManageCurrency(currencyRepository repository.ICurrency) *ManageCurrency {
+	return &ManageCurrency{CurrencyRepository: currencyRepository}
+}
+
 type IndexCurrencyArgs struct {
 	CurrencyRepository repository.ICurrency
 }
@@ -23,64 +27,40 @@ func (mc ManageCurrency) Index() ([]domain.Currency, error) {
 }
 
 type GetCurrencyArgs struct {
-	Id uint
+	Symbol string
 }
 
-func (mc ManageCurrency) Get(args GetCurrencyArgs) (domain.Currency, error) {
-	result, err := mc.CurrencyRepository.Get(args.Id)
+func (mc ManageCurrency) Get(args GetCurrencyArgs) (*domain.Currency, error) {
+	result, err := mc.CurrencyRepository.Get(args.Symbol)
 	if err != nil {
-		return domain.Currency{}, err
+		return &domain.Currency{}, err
 	}
 
 	return result, nil
 }
 
 type CreateCurrencyArgs struct {
-	Name   string `json:"name" binding:"required"`
 	Symbol string `json:"symbol" binding:"required"`
+	Name   string `json:"name" binding:"required"`
 }
 
-func (mc ManageCurrency) Create(args CreateCurrencyArgs) (domain.Currency, error) {
-	currency := domain.Currency{
-		Name:   args.Name,
-		Symbol: args.Symbol,
-	}
+func (mc ManageCurrency) Create(args CreateCurrencyArgs) (*domain.Currency, error) {
+	currency := domain.NewCurrency(args.Symbol, args.Name)
 
 	result, err := mc.CurrencyRepository.Save(currency)
 	if err != nil {
-		return domain.Currency{}, err
+		return &domain.Currency{}, err
 	}
 
-	return result, nil
-}
-
-type UpdateCurrencyArgs struct {
-	Id     uint
-	Name   string `json:"name"`
-	Symbol string `json:"symbol"`
-}
-
-func (mc ManageCurrency) Update(args UpdateCurrencyArgs) (domain.Currency, error) {
-	currency := domain.Currency{
-		Id:     args.Id,
-		Name:   args.Name,
-		Symbol: args.Symbol,
-	}
-	err := mc.CurrencyRepository.Update(currency)
-	if err != nil {
-		return domain.Currency{}, err
-	}
-
-	result, err := mc.CurrencyRepository.Get(currency.Id)
 	return result, nil
 }
 
 type DeleteCurrencyArgs struct {
-	Id string
+	Symbol string
 }
 
 func (mc ManageCurrency) Delete(args DeleteCurrencyArgs) error {
-	err := mc.CurrencyRepository.Delete(args.Id)
+	err := mc.CurrencyRepository.Delete(args.Symbol)
 	if err != nil {
 		return err
 	}

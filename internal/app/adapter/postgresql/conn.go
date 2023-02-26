@@ -14,6 +14,7 @@ func Connection() (db *gorm.DB) {
 	user := viper.Get("DB_USER")
 	pass := viper.Get("DB_PASSWORD")
 	dsn := fmt.Sprintf("host=%v user=%v password=%v", host, user, pass)
+	fmt.Println(dsn)
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		panic(err)

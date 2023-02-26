@@ -1,10 +1,25 @@
 package controller
 
 import (
+	"financials/internal/app/adapter/repository"
 	"financials/internal/app/application/usecase"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
+
+func (ctrl Controller) IndexAccount(c *gin.Context) {
+	accounts, err := usecase.NewManageAccount(
+		repository.NewAccountRepository(),
+		repository.NewCurrencyRepository(),
+	).Index()
+
+	if err != nil {
+		ctrl.response.Error(c, http.StatusBadRequest, err)
+		return
+	}
+
+	ctrl.response.Success(c, http.StatusOK, accounts)
+}
 
 func (ctrl Controller) CreateAccount(c *gin.Context) {
 	var args usecase.CreateAccountArgs
@@ -15,10 +30,10 @@ func (ctrl Controller) CreateAccount(c *gin.Context) {
 		return
 	}
 
-	account, err := usecase.ManageAccount{
-		AccountRepository:  accountRepository,
-		CurrencyRepository: currencyRepository,
-	}.Create(args)
+	account, err := usecase.NewManageAccount(
+		repository.NewAccountRepository(),
+		repository.NewCurrencyRepository(),
+	).Create(args)
 
 	if err != nil {
 		ctrl.response.Error(c, http.StatusBadRequest, err)

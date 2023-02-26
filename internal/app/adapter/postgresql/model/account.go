@@ -3,6 +3,7 @@ package model
 type Account struct {
 	ID         uint   `gorm:"primaryKey"`
 	Name       string `gorm:"uniqueIndex"`
-	CurrencyID int
+	Balance    float64
+	CurrencyID string
 	Currency   Currency
 }

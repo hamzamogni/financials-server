@@ -10,26 +10,56 @@ type ManageAccount struct {
 	CurrencyRepository repository.ICurrency
 }
 
-type CreateAccountArgs struct {
-	Name       string `json:"name" binding:"required"`
-	CurrencyId uint   `json:"currency_id" binding:"required"`
+func NewManageAccount(ar repository.IAccount, cr repository.ICurrency) *ManageAccount {
+	return &ManageAccount{AccountRepository: ar, CurrencyRepository: cr}
 }
 
-func (ma ManageAccount) Create(args CreateAccountArgs) (domain.Account, error) {
-	currency, err := ma.CurrencyRepository.Get(args.CurrencyId)
+type IndexAccountArgs struct {
+	AccountRepository repository.IAccount
+}
+
+func (ma ManageAccount) Index() ([]domain.Account, error) {
+	result, err := ma.AccountRepository.Index()
 	if err != nil {
-		return domain.Account{}, err
+		return []domain.Account{}, err
 	}
 
-	account := domain.Account{
+	return result, nil
+}
+
+type GetAccountArgs struct {
+	Id uint
+}
+
+func (ma ManageAccount) Get(args GetAccountArgs) (*domain.Account, error) {
+	result, err := ma.AccountRepository.Get(args.Id)
+	if err != nil {
+		return &domain.Account{}, err
+	}
+
+	return result, nil
+}
+
+type CreateAccountArgs struct {
+	Name           string `json:"name" binding:"required"`
+	CurrencySymbol string `json:"currency_symbol" binding:"required"`
+}
+
+func (ma ManageAccount) Create(args CreateAccountArgs) (*domain.Account, error) {
+	currency, err := ma.CurrencyRepository.Get(args.CurrencySymbol)
+	if err != nil {
+		return &domain.Account{}, err
+	}
+
+	account := &domain.Account{
 		Name:     args.Name,
 		Balance:  0,
-		Currency: currency,
+		Currency: *currency,
 	}
 
 	newAccount, err := ma.AccountRepository.Save(account)
 	if err != nil {
-		return domain.Account{}, err
+		return &domain.Account{}, err
 	}
 
 	return newAccount, nil

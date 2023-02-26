@@ -7,15 +7,21 @@ import (
 	"gorm.io/gorm"
 )
 
-type Currency struct{}
+type CurrencyRepository struct {
+	Db *gorm.DB
+}
 
-func (c Currency) Index() ([]domain.Currency, error) {
-	db := postgresql.Connection()
+func NewCurrencyRepository() *CurrencyRepository {
+	return &CurrencyRepository{
+		Db: postgresql.Connection(),
+	}
+}
 
+func (cr CurrencyRepository) Index() ([]domain.Currency, error) {
 	var ret []domain.Currency
 
 	var currencies []model.Currency
-	result := db.Find(&currencies)
+	result := cr.Db.Find(&currencies)
 
 	if result.Error != nil {
 		return []domain.Currency{}, result.Error
@@ -23,7 +29,6 @@ func (c Currency) Index() ([]domain.Currency, error) {
 
 	for _, currency := range currencies {
 		ret = append(ret, domain.Currency{
-			Id:     currency.ID,
 			Name:   currency.Name,
 			Symbol: currency.Symbol,
 		})
@@ -32,63 +37,36 @@ func (c Currency) Index() ([]domain.Currency, error) {
 	return ret, nil
 }
 
-func (c Currency) Get(id uint) (domain.Currency, error) {
-	db := postgresql.Connection()
+func (cr CurrencyRepository) Get(symbol string) (*domain.Currency, error) {
 	var currency model.Currency
 
-	result := db.Where("id = ?", id).First(&currency)
+	result := cr.Db.Where("symbol = ?", symbol).First(&currency)
 	if result.Error != nil {
-		return domain.Currency{}, result.Error
+		return &domain.Currency{}, result.Error
 	}
 
-	return domain.Currency{
-		Id:     currency.ID,
+	return &domain.Currency{
 		Name:   currency.Name,
 		Symbol: currency.Symbol,
 	}, nil
 }
 
-func (c Currency) Save(currency domain.Currency) (domain.Currency, error) {
-	db := postgresql.Connection()
-
+func (cr CurrencyRepository) Save(currency *domain.Currency) (*domain.Currency, error) {
 	newCurrency := model.Currency{
 		Name:   currency.Name,
 		Symbol: currency.Symbol,
 	}
 
-	result := db.Create(&newCurrency)
+	result := cr.Db.Create(&newCurrency)
 	if result.Error != nil {
-		return domain.Currency{}, result.Error
+		return &domain.Currency{}, result.Error
 	}
 
 	return currency, nil
 }
 
-func (c Currency) Update(currency domain.Currency) error {
-	db := postgresql.Connection()
-
-	toUpdateCurrency := model.Currency{
-		ID:     currency.Id,
-		Name:   currency.Name,
-		Symbol: currency.Symbol,
-	}
-
-	result := db.Model(&toUpdateCurrency).Updates(toUpdateCurrency)
-
-	if result.RowsAffected == 0 {
-		return gorm.ErrRecordNotFound
-	}
-	if result.Error != nil {
-		return result.Error
-	}
-
-	return nil
-}
-
-func (c Currency) Delete(ID string) error {
-	db := postgresql.Connection()
-
-	result := db.Model(&model.Currency{}).Where("id = ?", ID).Delete(&model.Currency{})
+func (cr CurrencyRepository) Delete(symbol string) error {
+	result := cr.Db.Model(&model.Currency{}).Where("symbol = ?", symbol).Delete(&model.Currency{})
 
 	if result.Error != nil {
 		return result.Error

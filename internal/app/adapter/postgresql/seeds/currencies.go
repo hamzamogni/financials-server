@@ -8,8 +8,8 @@ import (
 func (s Seed) CurrencySeed() {
 	for i := 0; i < 10; i++ {
 		currency := model.Currency{
-			Name:   faker.Currency(),
-			Symbol: faker.Word(),
+			Name:   faker.Word(),
+			Symbol: faker.Currency(),
 		}
 
 		s.db.Create(&currency)
