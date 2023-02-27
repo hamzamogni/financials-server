@@ -12,19 +12,28 @@ import (
 	"strings"
 )
 
-func (ctrl Controller) IndexCurrency(c *gin.Context) {
+type CurrencyController struct {
+	Controller
+	CurrencyRepository *repository.CurrencyRepository
+}
+
+func NewCurrencyController(currencyRepository *repository.CurrencyRepository) *CurrencyController {
+	return &CurrencyController{Controller: Controller{}, CurrencyRepository: currencyRepository}
+}
+
+func (currencyCtrl CurrencyController) IndexCurrency(c *gin.Context) {
 
 	currencies, err := usecase.NewManageCurrency(repository.NewCurrencyRepository()).Index()
 
 	if err != nil {
-		ctrl.response.Error(c, http.StatusBadRequest, err)
+		currencyCtrl.response.Error(c, http.StatusBadRequest, err)
 		return
 	}
 
-	ctrl.response.Success(c, http.StatusOK, currencies)
+	currencyCtrl.response.Success(c, http.StatusOK, currencies)
 }
 
-func (ctrl Controller) GetCurrency(c *gin.Context) {
+func (currencyCtrl CurrencyController) GetCurrency(c *gin.Context) {
 	symbol := strings.ToUpper(c.Param("symbol"))
 
 	args := usecase.GetCurrencyArgs{
@@ -34,23 +43,23 @@ func (ctrl Controller) GetCurrency(c *gin.Context) {
 	currency, err := usecase.NewManageCurrency(repository.NewCurrencyRepository()).Get(args)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			ctrl.response.Error(c, http.StatusNotFound, err)
+			currencyCtrl.response.Error(c, http.StatusNotFound, err)
 			return
 		}
 
-		ctrl.response.Error(c, http.StatusInternalServerError, err)
+		currencyCtrl.response.Error(c, http.StatusInternalServerError, err)
 		return
 	}
 
-	ctrl.response.Success(c, http.StatusOK, currency)
+	currencyCtrl.response.Success(c, http.StatusOK, currency)
 }
 
-func (ctrl Controller) CreateCurrency(c *gin.Context) {
+func (currencyCtrl CurrencyController) CreateCurrency(c *gin.Context) {
 	var args usecase.CreateCurrencyArgs
 
 	err := c.ShouldBindJSON(&args)
 	if err != nil {
-		ctrl.response.Error(c, http.StatusUnprocessableEntity, err)
+		currencyCtrl.response.Error(c, http.StatusUnprocessableEntity, err)
 		return
 	}
 
@@ -59,14 +68,14 @@ func (ctrl Controller) CreateCurrency(c *gin.Context) {
 	).Create(args)
 
 	if err != nil {
-		ctrl.response.Error(c, http.StatusBadRequest, err)
+		currencyCtrl.response.Error(c, http.StatusBadRequest, err)
 		return
 	}
 
-	ctrl.response.Success(c, http.StatusCreated, currency)
+	currencyCtrl.response.Success(c, http.StatusCreated, currency)
 }
 
-func (ctrl Controller) DeleteCurrency(c *gin.Context) {
+func (currencyCtrl CurrencyController) DeleteCurrency(c *gin.Context) {
 	symbol := cases.Upper(language.Und).String(c.Param("symbol"))
 
 	args := usecase.DeleteCurrencyArgs{
@@ -79,13 +88,13 @@ func (ctrl Controller) DeleteCurrency(c *gin.Context) {
 
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			ctrl.response.Error(c, http.StatusNotFound, err)
+			currencyCtrl.response.Error(c, http.StatusNotFound, err)
 			return
 		}
 
-		ctrl.response.Error(c, http.StatusInternalServerError, err)
+		currencyCtrl.response.Error(c, http.StatusInternalServerError, err)
 		return
 	}
 
-	ctrl.response.Success(c, http.StatusOK, "")
+	currencyCtrl.response.Success(c, http.StatusOK, "")
 }

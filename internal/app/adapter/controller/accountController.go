@@ -7,26 +7,37 @@ import (
 	"net/http"
 )
 
-func (ctrl Controller) IndexAccount(c *gin.Context) {
+type AccountController struct {
+	Controller
+
+	CurrencyRepository *repository.CurrencyRepository
+	AccountRepository  *repository.AccountRepository
+}
+
+func NewAccountController(currencyRepository *repository.CurrencyRepository, accountRepository *repository.AccountRepository) *AccountController {
+	return &AccountController{Controller: Controller{}, CurrencyRepository: currencyRepository, AccountRepository: accountRepository}
+}
+
+func (ac AccountController) IndexAccount(c *gin.Context) {
 	accounts, err := usecase.NewManageAccount(
 		repository.NewAccountRepository(),
 		repository.NewCurrencyRepository(),
 	).Index()
 
 	if err != nil {
-		ctrl.response.Error(c, http.StatusBadRequest, err)
+		ac.response.Error(c, http.StatusBadRequest, err)
 		return
 	}
 
-	ctrl.response.Success(c, http.StatusOK, accounts)
+	ac.response.Success(c, http.StatusOK, accounts)
 }
 
-func (ctrl Controller) CreateAccount(c *gin.Context) {
+func (ac AccountController) CreateAccount(c *gin.Context) {
 	var args usecase.CreateAccountArgs
 
 	err := c.ShouldBindJSON(&args)
 	if err != nil {
-		ctrl.response.Error(c, http.StatusUnprocessableEntity, err)
+		ac.response.Error(c, http.StatusUnprocessableEntity, err)
 		return
 	}
 
@@ -36,9 +47,9 @@ func (ctrl Controller) CreateAccount(c *gin.Context) {
 	).Create(args)
 
 	if err != nil {
-		ctrl.response.Error(c, http.StatusBadRequest, err)
+		ac.response.Error(c, http.StatusBadRequest, err)
 		return
 	}
 
-	ctrl.response.Success(c, http.StatusCreated, account)
+	ac.response.Success(c, http.StatusCreated, account)
 }

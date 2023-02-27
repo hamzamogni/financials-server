@@ -7,7 +7,13 @@ import (
 	"net/http"
 )
 
-func (ctrl Controller) SignIn(c *gin.Context) {
+type AuthController struct{}
+
+func NewAuthController() *AuthController {
+	return &AuthController{}
+}
+
+func (ac AuthController) SignIn(c *gin.Context) {
 	var user model.User
 
 	if err := c.ShouldBindJSON(&user); err != nil {
@@ -29,7 +35,7 @@ func (ctrl Controller) SignIn(c *gin.Context) {
 	c.JSON(http.StatusOK, token)
 }
 
-func (ctrl Controller) AuthMiddleware() gin.HandlerFunc {
+func (ac AuthController) AuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		tokenValue := c.GetHeader("Authorization")
 
