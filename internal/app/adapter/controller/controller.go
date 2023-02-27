@@ -28,8 +28,9 @@ func Router() *gin.Engine {
 	r := gin.Default()
 	ctrl := NewController(*repository.NewCurrencyRepository(), *repository.NewAccountRepository())
 
+	r.POST("/signin", ctrl.SignIn)
 	// currencies routes
-	r.GET("/currencies", ctrl.IndexCurrency)
+	r.Use(ctrl.AuthMiddleware()).GET("/currencies", ctrl.IndexCurrency)
 	r.GET("/currencies/:symbol", ctrl.GetCurrency)
 	r.POST("/currencies", ctrl.CreateCurrency)
 	r.DELETE("/currencies/:symbol", ctrl.DeleteCurrency)
