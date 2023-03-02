@@ -24,6 +24,7 @@ to quickly create a Cobra application.`,
 
 		db.AutoMigrate(&model.Currency{})
 		db.AutoMigrate(&model.Account{})
+		db.AutoMigrate(&model.User{})
 	},
 }
 

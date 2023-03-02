@@ -18,6 +18,7 @@ func Router() *gin.Engine {
 	authController := NewAuthController()
 
 	r.POST("/signin", authController.SignIn)
+	r.POST("/signup", authController.SignUp)
 
 	// currencies routes
 	r.Use(authController.AuthMiddleware()).GET("/currencies", currencyController.IndexCurrency)

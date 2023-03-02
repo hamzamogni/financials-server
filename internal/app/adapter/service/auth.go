@@ -24,7 +24,7 @@ type JWTOutput struct {
 
 // GenerateToken generates a JWT token
 func (as AuthService) GenerateToken(username string) (*JWTOutput, error) {
-	expirationTime := time.Now().Add(1 * time.Minute)
+	expirationTime := time.Now().Add(100 * time.Minute)
 	claimsValue := &claims{
 		Username: username,
 		MapClaims: jwt.MapClaims{

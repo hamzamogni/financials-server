@@ -2,15 +2,36 @@ package controller
 
 import (
 	"financials/internal/app/adapter/postgresql/model"
+	"financials/internal/app/adapter/repository"
 	"financials/internal/app/adapter/service"
+	"financials/internal/app/application/usecase"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
 
-type AuthController struct{}
+type AuthController struct {
+	Controller
+}
 
 func NewAuthController() *AuthController {
-	return &AuthController{}
+	return &AuthController{Controller: Controller{}}
+}
+
+func (ac AuthController) SignUp(c *gin.Context) {
+	var args usecase.CreateUserArgs
+	err := c.ShouldBindJSON(&args)
+	if err != nil {
+		ac.response.Error(c, http.StatusBadRequest, err)
+		return
+	}
+
+	user, err := usecase.NewManageUser(repository.NewUserRepository()).Create(args)
+	if err != nil {
+		ac.response.Error(c, http.StatusBadRequest, err)
+		return
+	}
+
+	ac.response.Success(c, http.StatusCreated, user)
 }
 
 func (ac AuthController) SignIn(c *gin.Context) {
