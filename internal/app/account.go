@@ -1,4 +1,4 @@
-package domain
+package app
 
 import "errors"
 
@@ -28,4 +28,12 @@ func (a *Account) DebitAccount(amount float64) error {
 
 	a.Balance -= amount
 	return nil
+}
+
+type AccountService interface {
+	Index() ([]Account, error)
+	Get(id uint) (*Account, error)
+	Save(account *Account) (*Account, error)
+	Update(account *Account) error
+	Delete(id string) error
 }

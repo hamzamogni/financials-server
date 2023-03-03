@@ -1,7 +1,8 @@
 package cmd
 
 import (
-	"financials/internal/app/adapter/controller"
+	"financials/internal/app/http"
+	"financials/internal/app/postgres"
 	"fmt"
 	"github.com/spf13/cobra"
 )
@@ -19,9 +20,13 @@ to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("serve called")
 
-		r := controller.Router()
+		s := http.NewServer()
 
-		r.Run(":8080")
+		s.CurrencyService = postgres.NewCurrencyService()
+		s.AccountService = postgres.NewAccountService()
+
+		s.Serve()
+
 	},
 }
 

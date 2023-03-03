@@ -1,8 +1,8 @@
 package cmd
 
 import (
-	"financials/internal/app/adapter/postgresql"
-	"financials/internal/app/adapter/postgresql/seeds"
+	"financials/internal/app/postgres"
+	"financials/internal/app/postgres/seed"
 	"fmt"
 	"github.com/spf13/cobra"
 )
@@ -21,9 +21,9 @@ to quickly create a Cobra application.`,
 		fmt.Println(args)
 		fmt.Println("migrate called")
 
-		db := postgresql.Connection()
+		db := postgres.Connection()
 
-		seeds.Execute(db)
+		seed.Execute(db)
 
 	},
 }

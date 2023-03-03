@@ -1,4 +1,4 @@
-package postgresql
+package postgres
 
 import (
 	"fmt"
@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-// Connection gets connection of postgresql database
+// Connection gets connection of postgres database
 func Connection() (db *gorm.DB) {
 	host := viper.Get("DB_HOST")
 	user := viper.Get("DB_USER")

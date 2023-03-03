@@ -1,27 +1,26 @@
 package usecase
 
 import (
-	"financials/internal/app/domain"
-	"financials/internal/app/domain/repository"
+	"financials/internal/app"
 )
 
 type ManageAccount struct {
-	AccountRepository  repository.IAccount
-	CurrencyRepository repository.ICurrency
+	AccountRepository  app.AccountService
+	CurrencyRepository app.CurrencyService
 }
 
-func NewManageAccount(ar repository.IAccount, cr repository.ICurrency) *ManageAccount {
+func NewManageAccount(ar app.AccountService, cr app.CurrencyService) *ManageAccount {
 	return &ManageAccount{AccountRepository: ar, CurrencyRepository: cr}
 }
 
 type IndexAccountArgs struct {
-	AccountRepository repository.IAccount
+	AccountRepository app.AccountService
 }
 
-func (ma ManageAccount) Index() ([]domain.Account, error) {
+func (ma ManageAccount) Index() ([]app.Account, error) {
 	result, err := ma.AccountRepository.Index()
 	if err != nil {
-		return []domain.Account{}, err
+		return []app.Account{}, err
 	}
 
 	return result, nil
@@ -31,10 +30,10 @@ type GetAccountArgs struct {
 	Id uint
 }
 
-func (ma ManageAccount) Get(args GetAccountArgs) (*domain.Account, error) {
+func (ma ManageAccount) Get(args GetAccountArgs) (*app.Account, error) {
 	result, err := ma.AccountRepository.Get(args.Id)
 	if err != nil {
-		return &domain.Account{}, err
+		return &app.Account{}, err
 	}
 
 	return result, nil
@@ -45,13 +44,13 @@ type CreateAccountArgs struct {
 	CurrencySymbol string `json:"currency_symbol" binding:"required"`
 }
 
-func (ma ManageAccount) Create(args CreateAccountArgs) (*domain.Account, error) {
+func (ma ManageAccount) Create(args CreateAccountArgs) (*app.Account, error) {
 	currency, err := ma.CurrencyRepository.Get(args.CurrencySymbol)
 	if err != nil {
-		return &domain.Account{}, err
+		return &app.Account{}, err
 	}
 
-	account := &domain.Account{
+	account := &app.Account{
 		Name:     args.Name,
 		Balance:  0,
 		Currency: *currency,
@@ -59,7 +58,7 @@ func (ma ManageAccount) Create(args CreateAccountArgs) (*domain.Account, error) 
 
 	newAccount, err := ma.AccountRepository.Save(account)
 	if err != nil {
-		return &domain.Account{}, err
+		return &app.Account{}, err
 	}
 
 	return newAccount, nil

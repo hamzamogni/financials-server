@@ -1,26 +1,25 @@
 package usecase
 
 import (
-	"financials/internal/app/domain"
-	"financials/internal/app/domain/repository"
+	"financials/internal/app"
 )
 
 type ManageCurrency struct {
-	CurrencyRepository repository.ICurrency
+	CurrencyRepository app.CurrencyService
 }
 
-func NewManageCurrency(currencyRepository repository.ICurrency) *ManageCurrency {
+func NewManageCurrency(currencyRepository app.CurrencyService) *ManageCurrency {
 	return &ManageCurrency{CurrencyRepository: currencyRepository}
 }
 
 type IndexCurrencyArgs struct {
-	CurrencyRepository repository.ICurrency
+	CurrencyRepository app.CurrencyService
 }
 
-func (mc ManageCurrency) Index() ([]domain.Currency, error) {
+func (mc ManageCurrency) Index() ([]app.Currency, error) {
 	result, err := mc.CurrencyRepository.Index()
 	if err != nil {
-		return []domain.Currency{}, err
+		return []app.Currency{}, err
 	}
 
 	return result, nil
@@ -30,10 +29,10 @@ type GetCurrencyArgs struct {
 	Symbol string
 }
 
-func (mc ManageCurrency) Get(args GetCurrencyArgs) (*domain.Currency, error) {
+func (mc ManageCurrency) Get(args GetCurrencyArgs) (*app.Currency, error) {
 	result, err := mc.CurrencyRepository.Get(args.Symbol)
 	if err != nil {
-		return &domain.Currency{}, err
+		return &app.Currency{}, err
 	}
 
 	return result, nil
@@ -44,12 +43,12 @@ type CreateCurrencyArgs struct {
 	Name   string `json:"name" binding:"required"`
 }
 
-func (mc ManageCurrency) Create(args CreateCurrencyArgs) (*domain.Currency, error) {
-	currency := domain.NewCurrency(args.Symbol, args.Name)
+func (mc ManageCurrency) Create(args CreateCurrencyArgs) (*app.Currency, error) {
+	currency := app.NewCurrency(args.Symbol, args.Name)
 
 	result, err := mc.CurrencyRepository.Save(currency)
 	if err != nil {
-		return &domain.Currency{}, err
+		return &app.Currency{}, err
 	}
 
 	return result, nil

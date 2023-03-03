@@ -1,15 +1,14 @@
 package usecase
 
 import (
-	"financials/internal/app/domain"
-	"financials/internal/app/domain/repository"
+	"financials/internal/app"
 )
 
 type ManageUser struct {
-	UserRepository repository.IUser
+	UserRepository app.UserService
 }
 
-func NewManageUser(userRepository repository.IUser) *ManageUser {
+func NewManageUser(userRepository app.UserService) *ManageUser {
 	return &ManageUser{UserRepository: userRepository}
 }
 
@@ -19,8 +18,8 @@ type CreateUserArgs struct {
 	Password string `json:"password" binding:"required"`
 }
 
-func (mu ManageUser) Create(args CreateUserArgs) (*domain.User, error) {
-	user := &domain.User{
+func (mu ManageUser) Create(args CreateUserArgs) (*app.User, error) {
+	user := &app.User{
 		Username: args.Username,
 		Email:    args.Email,
 		Password: args.Password,
@@ -28,7 +27,7 @@ func (mu ManageUser) Create(args CreateUserArgs) (*domain.User, error) {
 
 	newUser, err := mu.UserRepository.Save(user)
 	if err != nil {
-		return &domain.User{}, err
+		return &app.User{}, err
 	}
 
 	return newUser, nil

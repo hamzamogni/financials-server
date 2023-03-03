@@ -1,13 +1,13 @@
-package seeds
+package seed
 
 import (
-	"financials/internal/app/adapter/postgresql/model"
+	"financials/internal/app/postgres"
 	"github.com/go-faker/faker/v4"
 )
 
 func (s Seed) CurrencySeed() {
 	for i := 0; i < 10; i++ {
-		currency := model.Currency{
+		currency := postgres.Currency{
 			Name:   faker.Word(),
 			Symbol: faker.Currency(),
 		}
