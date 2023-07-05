@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	postgresql2 "financials/internal/app/postgres"
+	"financials/internal/app/postgres"
 	"fmt"
 	"github.com/spf13/cobra"
 )
@@ -19,11 +19,12 @@ to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("migrate called")
 
-		db := postgresql2.Connection()
+		db := postgres.Connection()
 
-		db.AutoMigrate(&postgresql2.Currency{})
-		db.AutoMigrate(&postgresql2.Account{})
-		db.AutoMigrate(&postgresql2.User{})
+		db.AutoMigrate(&postgres.Currency{})
+		db.AutoMigrate(&postgres.Account{})
+		db.AutoMigrate(&postgres.User{})
+		db.AutoMigrate(&postgres.Auth{})
 	},
 }
 

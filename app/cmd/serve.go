@@ -24,6 +24,8 @@ to quickly create a Cobra application.`,
 
 		s.CurrencyService = postgres.NewCurrencyService()
 		s.AccountService = postgres.NewAccountService()
+		s.AuthService = postgres.NewAuthService()
+		s.UserService = postgres.NewUserService()
 
 		s.Serve()
 

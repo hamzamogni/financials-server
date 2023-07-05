@@ -5,11 +5,11 @@ import (
 )
 
 type ManageUser struct {
-	UserRepository app.UserService
+	UserService app.UserService
 }
 
-func NewManageUser(userRepository app.UserService) *ManageUser {
-	return &ManageUser{UserRepository: userRepository}
+func NewManageUser(userService app.UserService) *ManageUser {
+	return &ManageUser{UserService: userService}
 }
 
 type CreateUserArgs struct {
@@ -25,7 +25,7 @@ func (mu ManageUser) Create(args CreateUserArgs) (*app.User, error) {
 		Password: args.Password,
 	}
 
-	newUser, err := mu.UserRepository.Save(user)
+	newUser, err := mu.UserService.Save(user)
 	if err != nil {
 		return &app.User{}, err
 	}

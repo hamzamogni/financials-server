@@ -4,6 +4,7 @@ import (
 	"financials/internal/app"
 	"financials/internal/app/http/service"
 	"github.com/gin-gonic/gin"
+	"log"
 	"net/http"
 )
 
@@ -13,6 +14,7 @@ type Server struct {
 	AccountService  app.AccountService
 	CurrencyService app.CurrencyService
 	AuthService     app.AuthService
+	UserService     app.UserService
 }
 
 func NewServer() *Server {
@@ -39,7 +41,11 @@ func (s *Server) ErrorResponse(c *gin.Context, statusCode int, message error) {
 }
 
 func (s *Server) Serve() {
-	s.router.Run(":8080")
+	err := s.router.Run(":8080")
+	if err != nil {
+		log.Fatal("can't start server")
+		return
+	}
 }
 
 // requireAuth is a middleware to validate API key

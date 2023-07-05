@@ -1,7 +1,7 @@
 package http
 
 import (
-	"financials/internal/app/http/service"
+	"financials/internal/app"
 	"financials/internal/app/postgres"
 	"financials/internal/app/usecase"
 	"github.com/gin-gonic/gin"
@@ -30,24 +30,43 @@ func (s *Server) SignUp(c *gin.Context) {
 	s.SuccessResponse(c, http.StatusCreated, user)
 }
 
-func (s *Server) SignIn(c *gin.Context) {
-	var user postgres.User
+type SignInArgs struct {
+	Email    string `json:"email" binding:"required"`
+	Password string `json:"password" binding:"required"`
+}
 
-	if err := c.ShouldBindJSON(&user); err != nil {
+func (s *Server) SignIn(c *gin.Context) {
+	var args SignInArgs
+
+	if err := c.ShouldBindJSON(&args); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	if user.Username != "hmogni" || user.Password != "password" {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid credentials"})
-		return
-	}
-
-	token, err := service.AuthService{}.GenerateToken(user.Username)
+	user, err := s.UserService.GetByEmail(args.Email)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"errors": err.Error()})
+		s.ErrorResponse(c, http.StatusUnauthorized, err)
 		return
 	}
 
-	c.JSON(http.StatusOK, token)
+	if user.Password != args.Password {
+		s.ErrorResponse(c, http.StatusUnauthorized, err)
+		return
+	}
+
+	auth := app.Auth{
+		User: user,
+	}
+	if err := auth.GenerateToken(); err != nil {
+		s.ErrorResponse(c, http.StatusInternalServerError, err)
+		return
+	}
+
+	newAuth, err := s.AuthService.CreateAuth(&auth)
+	if err != nil {
+		s.ErrorResponse(c, http.StatusInternalServerError, err)
+		return
+	}
+
+	s.SuccessResponse(c, http.StatusOK, newAuth)
 }
